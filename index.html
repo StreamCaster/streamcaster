@@ -6,28 +6,52 @@
   <head>
     <meta charset="UTF-8">
     <style>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.sendgrid.com/api/v3/js/sendgrid.min.js"></script>
 <script>
   const form = document.querySelector('#contato form');
-
   form.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const data = new FormData(form);
-    const payload = {
-      from: data.get('email'),
-      to: 'streamcaster77@gmail.com',
-      subject: 'Nova mensagem de contato',
-      text: `Nome: ${data.get('nome')}\nE-mail: ${data.get('email')}\nMensagem: ${data.get('mensagem')}`,
+    // Obtem os dados do formulário
+    const name = form.elements['name'].value;
+    const email = form.elements['email'].value;
+    const message = form.elements['message'].value;
+
+    // Define o corpo da mensagem de e-mail
+    const emailBody = `
+      Nome: ${name}
+      E-mail: ${email}
+      Mensagem: ${message}
+    `;
+
+    // Configura o objeto de envio de e-mail do SendGrid
+    const sendgrid = window.SendGrid('SG.NjmKJTmfSmC1978l0vi1rA.taSbAov0cjitqoSG.NjmKJTmfSmC1978l0vi1rA.taSbAov0cjitqoSG.NjmKJTmfSmC1978l0vi1rA.taSbAov0cjitqowROfqQwah0kbG_djfJaOGWbevtm2c');
+    const emailData = {
+      personalizations: [{
+        to: [{
+          email: 'streamcaster77@gmail.com'
+        }]
+      }],
+      from: {
+        email: email,
+        name: name
+      },
+      subject: 'Nova mensagem do formulário de contato do StreamCaster',
+      content: [{
+        type: 'text/plain',
+        value: emailBody
+      }]
     };
 
-    axios.post('/enviar-email', payload)
-      .then((response) => {
-        alert('Mensagem enviada com sucesso!');
+    // Envia a mensagem de e-mail
+    sendgrid.send(emailData)
+      .then(() => {
+        alert('Sua mensagem foi enviada com sucesso!');
         form.reset();
       })
       .catch((error) => {
-        alert('Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente mais tarde.');
+        console.error(error);
+        alert('Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente mais tarde.');
       });
   });
 </script>
