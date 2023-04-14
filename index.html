@@ -6,6 +6,32 @@
   <head>
     <meta charset="UTF-8">
     <style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const form = document.querySelector('#contato form');
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const data = new FormData(form);
+    const payload = {
+      from: data.get('email'),
+      to: 'streamcaster77@gmail.com',
+      subject: 'Nova mensagem de contato',
+      text: `Nome: ${data.get('nome')}\nE-mail: ${data.get('email')}\nMensagem: ${data.get('mensagem')}`,
+    };
+
+    axios.post('/enviar-email', payload)
+      .then((response) => {
+        alert('Mensagem enviada com sucesso!');
+        form.reset();
+      })
+      .catch((error) => {
+        alert('Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente mais tarde.');
+      });
+  });
+</script>
+
       /* Estilo do cabeçalho */
       header {
         background-color: #151515;
